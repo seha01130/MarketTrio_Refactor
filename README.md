@@ -32,7 +32,6 @@ BestSeller의 MarketTrio 레포지토리입니다
   - ![Static Badge](https://img.shields.io/badge/javascript-%23F7DF1E?style=flat-square&logo=Script)
 
 ### Database
-- **SQL**: <img src="https://img.shields.io/badge/MySQL-4479A1?style=flat-square&logo=MySQL&logoColor=white"/>
 - **DBMS**: ![Static Badge](https://img.shields.io/badge/OracleDB-%23F80000?style=flat-square&logo=Oracle)
 
 
