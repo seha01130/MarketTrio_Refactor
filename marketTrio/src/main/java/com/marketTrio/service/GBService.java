@@ -244,7 +244,7 @@ public class GBService {
             return "마감";
          }
         else {
-           return String.format("D-%d", daysRemaining);
+           return "D-%d".formatted(daysRemaining);
         }
       }
 }

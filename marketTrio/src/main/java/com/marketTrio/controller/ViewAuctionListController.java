@@ -46,7 +46,7 @@ private AuctionService auctionService;
                 } else { // 참여자가 있는 경우
                     List<AParticipantEntity> participants = auction.getParticipants();
                     participants.sort(Comparator.comparingInt(AParticipantEntity::getParticipatePrice));
-                    listOfCurrentMaxPrice.add(participants.get(participants.size() - 1).getParticipatePrice());
+                    listOfCurrentMaxPrice.add(participants.getLast().getParticipatePrice());
                 }
                 
                 model.addAttribute("listOfCurrentMaxPrice", listOfCurrentMaxPrice);
@@ -67,7 +67,7 @@ private AuctionService auctionService;
                 } else { // 참여자가 있는 경우
                     List<AParticipantEntity> participants = auction.getParticipants();
                     participants.sort(Comparator.comparingInt(AParticipantEntity::getParticipatePrice));
-                    listOfCurrentMaxPrice.add(participants.get(participants.size() - 1).getParticipatePrice());
+                    listOfCurrentMaxPrice.add(participants.getLast().getParticipatePrice());
                 }
             }
             

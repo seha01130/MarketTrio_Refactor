@@ -91,7 +91,7 @@ public class LoginAndRegisterController {
 
         System.out.println("Uploaded File Names in Controller: " + uploadedFileNames);
         // 첫 번째 파일 이름을 사용
-        String firstUploadedFileName = !uploadedFileNames.isEmpty() ? uploadedFileNames.get(0) : null;
+        String firstUploadedFileName = !uploadedFileNames.isEmpty() ? uploadedFileNames.getFirst() : null;
         memberCommand.getMember().setProfilePicture(firstUploadedFileName);
         
         System.out.println("사진이 command에 잘 저장됨?: " + firstUploadedFileName);

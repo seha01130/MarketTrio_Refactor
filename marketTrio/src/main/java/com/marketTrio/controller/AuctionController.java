@@ -135,14 +135,14 @@ public class AuctionController {
             model.addAttribute("currentMaxParticipant", null);
         } else { //참여자가 있을 경우
         	List<AParticipantEntity> participants = auctionService.getParticipantsByAuctionId(auctionId);
-        	System.out.println(participants.get(0).getaPartId());
+        	System.out.println(participants.getFirst().getaPartId());
 
         	 // 중복 제거를 위해 Set을 사용
             Set<String> memberIds = new HashSet<>();
             participants.removeIf(participant -> !memberIds.add(participant.getMember().getId()));
 
         	participants.sort(Comparator.comparingInt(AParticipantEntity::getParticipatePrice));
-        	currentMaxParticipant = participants.get(participants.size() - 1);
+        	currentMaxParticipant = participants.getLast();
         	
         	System.out.println(currentMaxParticipant.getMember().getNickname() + "ㅇㄹㄴㅇㄹㄴㅇㄹㄴㅇㄹ");
         	

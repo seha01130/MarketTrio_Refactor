@@ -178,7 +178,7 @@ public class MyInfoController {
 		// 첫 번째 파일 이름을 사용
 		
 		String memberId = memberCommand.getMember().getId();
-		String firstUploadedFileName = !uploadedFileNames.isEmpty() ? uploadedFileNames.get(0) : null;
+		String firstUploadedFileName = !uploadedFileNames.isEmpty() ? uploadedFileNames.getFirst() : null;
 		if (firstUploadedFileName==null) {
 			firstUploadedFileName = myInfoService.getProfilePicture(memberId);
 		}
