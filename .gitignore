@@ -1,0 +1,42 @@
+# ========== Build (빌드 결과물 – 재생성 가능, 커밋하면 저장소만 커짐) ==========
+target/
+*.class
+*.jar
+*.war
+*.ear
+*.zip
+*.tar.gz
+*.rar
+*.nar
+
+# ========== Logs & crash (로그·JVM 크래시 덤프 – 환경마다 다름, 보안/용량) ==========
+*.log
+hs_err_pid*
+
+# ========== Maven (mvn release·wrapper 등 부가 파일 – 로컬/빌드 과정에서만 필요) ==========
+pom.xml.tag
+pom.releaseBackup
+pom.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties
+.mvn/wrapper/maven-wrapper.jar
+
+# ========== IntelliJ IDEA (많은 팀이 사용, .idea·out 없으면 깔끔) ==========
+.idea/
+*.iml
+*.iws
+*.ipr
+out/
+
+# ========== VS Code (설정 공유하려면 이 블록 삭제) ==========
+.vscode/
+
+# ========== macOS (Finder·시스템이 만드는 파일, 맥 사용자끼리 충돌 방지) ==========
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# ========== Local / secret (로컬 DB 비밀번호만 따로 쓸 때 주석 해제) ==========
+# application-local.properties

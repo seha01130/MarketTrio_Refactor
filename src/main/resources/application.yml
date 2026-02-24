@@ -1,11 +1,9 @@
 spring:
-  datasource:  # Oracle dataSource 
-    driver-class-name: oracle.jdbc.driver.OracleDriver
-    url: jdbc:oracle:thin:@dblab.dongduk.ac.kr:1521/orclpdb
-#    url: jdbc:oracle:thin:@dblab_high?TNS_ADMIN=C:/Oracle/Wallet_DBLab    # use Oracle Wallet
-#    url: jdbc:oracle:thin:@(description=(retry_count=20)(retry_delay=3)(address=(protocol=tcps)(port=1521)(host=...))(connect_data=(service_name=...))(security=(ssl_server_dn_match=yes)))
-    username: ss240104
-    password: 101510
+  datasource:  # MySQL dataSource
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/markettrio?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+    username: root
+    password: 
 #    hikari:   # HikariCP settings
 #      minimumIdle: 5
 #      maximumPoolSize: 20
@@ -18,8 +16,8 @@ spring:
       prefix: /WEB-INF/jsp/
       suffix: .jsp
   jpa:
-    database: oracle
-    database-platform: org.hibernate.dialect.Oracle10gDialect
+    database: mysql
+    database-platform: org.hibernate.dialect.MySQL8Dialect
     show-sql: true
     generate-ddl: false
     hibernate:
