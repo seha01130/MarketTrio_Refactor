@@ -1,0 +1,107 @@
+package com.marketTrio.auction.service;
+
+import java.io.IOException;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.TaskScheduler;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.marketTrio.auction.domain.AParticipantEntity;
+import com.marketTrio.auction.domain.AuctionEntity;
+import com.marketTrio.auction.domain.AuctionForm;
+import com.marketTrio.auction.repository.AParticipantRepository;
+import com.marketTrio.auction.repository.AuctionRepository;
+import com.marketTrio.member.dao.MyBatisMemberDao;
+import com.marketTrio.member.domain.Member;
+
+@Service
+public class AuctionService {
+	@Autowired
+	private AuctionRepository auctionRepository;
+	@Autowired
+	private AParticipantRepository aParticipantRepository;
+	@Autowired
+	private TaskScheduler taskScheduler;
+	@Autowired
+	private MyBatisMemberDao memberDao;
+
+	public List<AuctionEntity> getNotAvailableAuctionList() {
+		return auctionRepository.findByAuctionStatusOrderByDeadlineAsc(1);
+	}
+
+	public AuctionEntity createAuction(AuctionForm postData, String memberId, List<String> uploadedFileNames) throws IllegalStateException, IOException {
+		AuctionEntity auctionEntity = new AuctionEntity();
+		auctionEntity.setName(postData.getName());
+		auctionEntity.setStartPrice(postData.getStartPrice());
+		auctionEntity.setMaxPrice(postData.getStartPrice());
+		auctionEntity.setDetailInfo(postData.getDetailInfo());
+		auctionEntity.setDeadline(postData.getDeadline());
+		auctionEntity.setAuctionStatus(0);
+		auctionEntity.setCreateDate(new Date());
+		auctionEntity.setPictures(uploadedFileNames);
+		Member member = memberDao.getMember(memberId);
+		auctionEntity.setMember(member);
+		auctionEntity.setLatitude(postData.getLatitude());
+		auctionEntity.setLongitude(postData.getLongitude());
+		return auctionRepository.save(auctionEntity);
+	}
+
+	public AuctionEntity getAuction(int auctionId) {
+		return auctionRepository.findById(auctionId).orElse(null);
+	}
+
+	public AuctionEntity updateAPost(AuctionEntity auction) {
+		return auctionRepository.save(auction);
+	}
+
+	@Transactional
+	public void updateBidAmount(int auctionId, int bidAmount, String memberId) {
+		AParticipantEntity participant = aParticipantRepository.findByAuction_AuctionPostIdAndMember_Id(auctionId, memberId);
+		if (participant != null) {
+			participant.setParticipatePrice(bidAmount);
+			aParticipantRepository.save(participant);
+		} else {
+			AParticipantEntity newParticipant = new AParticipantEntity();
+			Optional<AuctionEntity> auction = auctionRepository.findById(auctionId);
+			if (auction.isEmpty()) throw new IllegalArgumentException("Auction not found for given auctionId");
+			newParticipant.setMember(memberDao.getMember(memberId));
+			newParticipant.setAuction(auction.get());
+			newParticipant.setBidstatus(0);
+			newParticipant.setParticipatePrice(bidAmount);
+			aParticipantRepository.save(newParticipant);
+		}
+	}
+
+	@Transactional
+	public void cancelBid(int auctionId, String memberId) {
+		AParticipantEntity participant = aParticipantRepository.findByAuction_AuctionPostIdAndMember_Id(auctionId, memberId);
+		participant.setAuction(null);
+		participant.setMember(null);
+		aParticipantRepository.delete(participant);
+	}
+
+	public void scheduleAuctionClose(AuctionEntity auction) {
+		taskScheduler.schedule(() -> {
+			auctionRepository.findById(auction.getAuctionPostId()).ifPresent(a -> {
+				a.setAuctionStatus(1);
+				auctionRepository.save(a);
+			});
+		}, auction.getDeadline());
+	}
+
+	public List<AuctionEntity> getAvailableAuctions() {
+		return auctionRepository.findByAuctionStatusOrderByDeadlineAsc(0);
+	}
+
+	public List<AParticipantEntity> getParticipantsByAuctionId(int auctionId) {
+		return aParticipantRepository.findByAuction_AuctionPostId(auctionId);
+	}
+
+	public void delete(int auctionId) {
+		auctionRepository.deleteById(auctionId);
+	}
+}
