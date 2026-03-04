@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.TaskScheduler;
@@ -12,7 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.marketTrio.auction.domain.AParticipantEntity;
 import com.marketTrio.auction.domain.AuctionEntity;
-import com.marketTrio.auction.domain.AuctionForm;
+import com.marketTrio.auction.dto.AuctionForm;
 import com.marketTrio.auction.repository.AParticipantRepository;
 import com.marketTrio.auction.repository.AuctionRepository;
 import com.marketTrio.member.dao.MyBatisMemberDao;
@@ -20,6 +22,11 @@ import com.marketTrio.member.domain.Member;
 
 @Service
 public class AuctionService {
+
+	private static final Logger log = LoggerFactory.getLogger(AuctionService.class);
+	private static final int AUCTION_STATUS_OPEN = 0;
+	private static final int AUCTION_STATUS_CLOSED = 1;
+
 	@Autowired
 	private AuctionRepository auctionRepository;
 	@Autowired
@@ -30,9 +37,10 @@ public class AuctionService {
 	private MyBatisMemberDao memberDao;
 
 	public List<AuctionEntity> getNotAvailableAuctionList() {
-		return auctionRepository.findByAuctionStatusOrderByDeadlineAsc(1);
+		return auctionRepository.findByAuctionStatusOrderByDeadlineAsc(AUCTION_STATUS_CLOSED);
 	}
 
+	@Transactional
 	public AuctionEntity createAuction(AuctionForm postData, String memberId, List<String> uploadedFileNames) throws IllegalStateException, IOException {
 		AuctionEntity auctionEntity = new AuctionEntity();
 		auctionEntity.setName(postData.getName());
@@ -40,7 +48,7 @@ public class AuctionService {
 		auctionEntity.setMaxPrice(postData.getStartPrice());
 		auctionEntity.setDetailInfo(postData.getDetailInfo());
 		auctionEntity.setDeadline(postData.getDeadline());
-		auctionEntity.setAuctionStatus(0);
+		auctionEntity.setAuctionStatus(AUCTION_STATUS_OPEN);
 		auctionEntity.setCreateDate(new Date());
 		auctionEntity.setPictures(uploadedFileNames);
 		Member member = memberDao.getMember(memberId);
@@ -84,17 +92,26 @@ public class AuctionService {
 		aParticipantRepository.delete(participant);
 	}
 
-	public void scheduleAuctionClose(AuctionEntity auction) {
+	public void scheduleAuctionClose(int auctionId, Date deadline) {
+		Date now = new Date();
+		Date triggerTime = deadline.before(now) ? now : deadline;
+
 		taskScheduler.schedule(() -> {
-			auctionRepository.findById(auction.getAuctionPostId()).ifPresent(a -> {
-				a.setAuctionStatus(1);
-				auctionRepository.save(a);
-			});
-		}, auction.getDeadline());
+			try {
+				auctionRepository.findById(auctionId).ifPresent(a -> {
+					if (a.getAuctionStatus() != AUCTION_STATUS_CLOSED) {
+						a.setAuctionStatus(AUCTION_STATUS_CLOSED);
+						auctionRepository.save(a);
+					}
+				});
+			} catch (Exception e) {
+				log.error("Failed to close auction {}", auctionId, e);
+			}
+		}, triggerTime);
 	}
 
 	public List<AuctionEntity> getAvailableAuctions() {
-		return auctionRepository.findByAuctionStatusOrderByDeadlineAsc(0);
+		return auctionRepository.findByAuctionStatusOrderByDeadlineAsc(AUCTION_STATUS_OPEN);
 	}
 
 	public List<AParticipantEntity> getParticipantsByAuctionId(int auctionId) {
