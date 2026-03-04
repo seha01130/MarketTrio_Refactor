@@ -1,19 +1,32 @@
-package com.marketTrio.auction.domain;
+package com.marketTrio.auction.dto;
 
 import java.io.Serializable;
 import java.util.Date;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.FutureOrPresent;
+
 @SuppressWarnings("serial")
 public class AuctionForm implements Serializable {
+	@NotBlank(message = "제목을 입력하세요")
 	private String name;
+
+	@Min(value = 1, message = "가격을 입력하세요")
 	private int startPrice;
+
+	@NotBlank(message = "상세설명을 입력해주세요")
 	private String detailInfo;
+
 	private Double latitude;
 	private Double longitude;
 
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
+	@NotNull(message = "마감 날짜를 입력해주세요")
+	@FutureOrPresent(message = "마감 날짜는 현재 시각 이후여야 합니다")
 	private Date deadline;
 	private String picture;
 

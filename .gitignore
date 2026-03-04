@@ -39,4 +39,7 @@ out/
 .LSOverride
 
 # ========== Local / secret (로컬 DB 비밀번호만 따로 쓸 때 주석 해제) ==========
-# application-local.properties
+application-local.properties
+
+docs/
+uploads/
