@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>페이지를 찾을 수 없습니다 - MarketTrio</title>
+	<style>
+		body {
+			margin: 0;
+			padding: 0;
+			font-family: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+			background: linear-gradient(135deg, #f0f4f8, #e3f2fd);
+			color: #333;
+		}
+
+		.container {
+			min-height: 100vh;
+			display: flex;
+			flex-direction: column;
+		}
+
+		header {
+			flex-shrink: 0;
+		}
+
+		main {
+			flex: 1;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			padding: 20px;
+		}
+
+		.card {
+			background-color: #ffffff;
+			border-radius: 16px;
+			box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+			padding: 40px 32px;
+			max-width: 480px;
+			width: 100%;
+			text-align: center;
+		}
+
+		.status-code {
+			font-size: 64px;
+			font-weight: 800;
+			color: #76c043;
+			margin: 0 0 8px 0;
+		}
+
+		.title {
+			font-size: 24px;
+			font-weight: 700;
+			margin-bottom: 12px;
+		}
+
+		.description {
+			font-size: 15px;
+			color: #666;
+			margin-bottom: 24px;
+			line-height: 1.6;
+		}
+
+		.highlight {
+			font-weight: 600;
+			color: #333;
+		}
+
+		actions {
+			display: flex;
+			justify-content: center;
+			gap: 12px;
+			margin-top: 8px;
+		}
+
+		.button {
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			padding: 10px 18px;
+			border-radius: 999px;
+			text-decoration: none;
+			font-size: 14px;
+			font-weight: 600;
+			cursor: pointer;
+			border: none;
+			outline: none;
+			transition: background-color 0.15s ease, transform 0.1s ease, box-shadow 0.15s ease;
+		}
+
+		.button-primary {
+			background-color: #76c043;
+			color: #ffffff;
+			box-shadow: 0 4px 10px rgba(118, 192, 67, 0.35);
+		}
+
+		.button-primary:hover {
+			background-color: #67ac3a;
+			transform: translateY(-1px);
+			box-shadow: 0 6px 14px rgba(118, 192, 67, 0.4);
+		}
+
+		.button-secondary {
+			background-color: #f3f6fa;
+			color: #555;
+		}
+
+		.button-secondary:hover {
+			background-color: #e4ebf5;
+		}
+
+		.info {
+			font-size: 13px;
+			color: #999;
+			margin-top: 16px;
+		}
+
+		.info span {
+			font-weight: 500;
+			color: #666;
+		}
+
+		@media (max-width: 480px) {
+			.card {
+				padding: 28px 20px;
+				border-radius: 12px;
+			}
+
+			.status-code {
+				font-size: 48px;
+			}
+
+			.title {
+				font-size: 20px;
+			}
+		}
+	</style>
+</head>
+<body>
+<div class="container">
+	<header>
+		<div th:insert="thyme/banner"></div>
+	</header>
+	<main>
+		<section class="card">
+			<p class="status-code">404</p>
+			<h1 class="title">요청하신 경매 글을 찾을 수 없어요.</h1>
+			<p class="description">
+				요청하신 경매 게시글이 존재하지 않거나,<br/>
+				이미 삭제되었을 수 있습니다.<br/>
+				<span class="highlight">주소를 다시 확인</span>하시거나, 경매 목록에서 다른 상품을 둘러보세요.
+			</p>
+			<div class="actions">
+				<a th:href="@{/auction/list}" class="button button-primary">경매 목록으로 이동</a>
+				<button type="button" class="button button-secondary" onclick="history.back()">이전 페이지로</button>
+			</div>
+			<p class="info" th:if="${requestedAuctionId != null}">
+				요청하신 경매 ID: <span th:text="${requestedAuctionId}"></span>
+			</p>
+		</section>
+	</main>
+</div>
+</body>
+</html>
+

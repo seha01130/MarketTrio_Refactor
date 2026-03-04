@@ -8,6 +8,7 @@ import java.util.Optional;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.ZoneId;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.marketTrio.auction.domain.AParticipantEntity;
 import com.marketTrio.auction.domain.AuctionEntity;
 import com.marketTrio.auction.dto.AuctionForm;
+import com.marketTrio.auction.exception.AuctionNotFoundException;
 import com.marketTrio.auction.repository.AParticipantRepository;
 import com.marketTrio.auction.repository.AuctionRepository;
 import com.marketTrio.member.dao.MyBatisMemberDao;
@@ -69,7 +71,8 @@ public class AuctionService {
 	}
 
 	public AuctionEntity getAuction(int auctionId) {
-		return auctionRepository.findById(auctionId).orElse(null);
+		return auctionRepository.findById(auctionId)
+				.orElseThrow(() -> new AuctionNotFoundException(auctionId));
 	}
 
 	public AuctionEntity updateAPost(AuctionEntity auction) {
@@ -126,6 +129,11 @@ public class AuctionService {
 
 	public List<AParticipantEntity> getParticipantsByAuctionId(int auctionId) {
 		return aParticipantRepository.findByAuction_AuctionPostId(auctionId);
+	}
+
+	public AParticipantEntity getCurrentMaxParticipant(int auctionId) {
+		return aParticipantRepository.findTopByAuction_AuctionPostIdOrderByParticipatePriceDesc(auctionId)
+				.orElse(null);
 	}
 
 	public void delete(int auctionId) {

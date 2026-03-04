@@ -70,30 +70,30 @@ public class AuctionController {
 	}
 
 	@GetMapping("/auction/{auctionId}/detail")
-	public String viewAuction(HttpServletRequest request, @PathVariable("auctionId") int auctionId,
-			@ModelAttribute("memberSession") MemberSession memberSession, Model model) {
-		String memberId = memberSession.getMemberId();
-		boolean isCurrentMaxParticipant = false;
-		AParticipantEntity currentMaxParticipant = null;
+	public String viewAuction(@PathVariable("auctionId") int auctionId,
+							  @ModelAttribute("memberSession") MemberSession memberSession,
+							  Model model) {
+
+		String memberId = memberSession != null ? memberSession.getMemberId() : null;
 
 		AuctionEntity auction = auctionService.getAuction(auctionId);
 		model.addAttribute("postAuction", auction);
 
-		List<AParticipantEntity> participants = auction.getParticipants();
-		if (participants == null || participants.isEmpty()) {
-			model.addAttribute("currentMaxParticipant", null);
-		} else {
-			participants = auctionService.getParticipantsByAuctionId(auctionId);
-			Set<String> memberIds = new HashSet<>();
-			participants.removeIf(p -> !memberIds.add(p.getMember().getId()));
-			participants.sort(Comparator.comparingInt(AParticipantEntity::getParticipatePrice));
-			currentMaxParticipant = participants.get(participants.size() - 1);
-			if (memberId.equals(currentMaxParticipant.getMember().getId())) isCurrentMaxParticipant = true;
-			model.addAttribute("isCurrentMaxParticipant", isCurrentMaxParticipant);
-			model.addAttribute("currentMaxParticipant", currentMaxParticipant);
-		}
+		boolean isSeller = memberId != null
+				&& auction.getMember() != null
+				&& memberId.equals(auction.getMember().getId());
+		model.addAttribute("isSeller", isSeller);
 
-		model.addAttribute("isSeller", memberId.equals(auction.getMember().getId()));
+		AParticipantEntity currentMaxParticipant = auctionService.getCurrentMaxParticipant(auctionId);
+
+		boolean isCurrentMaxParticipant = currentMaxParticipant != null
+				&& currentMaxParticipant.getMember() != null
+				&& memberId != null
+				&& memberId.equals(currentMaxParticipant.getMember().getId());
+
+		model.addAttribute("currentMaxParticipant", currentMaxParticipant);
+		model.addAttribute("isCurrentMaxParticipant", isCurrentMaxParticipant);
+
 		return "thyme/auction/auctionDetail";
 	}
 }
