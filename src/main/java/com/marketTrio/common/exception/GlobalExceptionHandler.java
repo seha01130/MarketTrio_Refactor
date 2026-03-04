@@ -1,7 +1,9 @@
-package com.marketTrio.common.web;
+package com.marketTrio.common.exception;
 
+import com.marketTrio.auction.exception.AuctionNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
@@ -11,6 +13,12 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 public class GlobalExceptionHandler {
 
 	private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
+
+	@ExceptionHandler(AuctionNotFoundException.class)
+	public String handleAuctionNotFound(AuctionNotFoundException ex, Model model) {
+		model.addAttribute("requestedAuctionId", ex.getAuctionId());
+		return "thyme/error/404";
+	}
 
 	@ExceptionHandler(MaxUploadSizeExceededException.class)
 	public String handleMaxUploadSizeExceeded(MaxUploadSizeExceededException ex, RedirectAttributes redirectAttributes) {
