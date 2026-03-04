@@ -1,7 +1,7 @@
 package com.marketTrio.auction.dto;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDate;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -27,7 +27,7 @@ public class AuctionForm implements Serializable {
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	@NotNull(message = "마감 날짜를 입력해주세요")
 	@FutureOrPresent(message = "마감 날짜는 현재 시각 이후여야 합니다")
-	private Date deadline;
+	private LocalDate deadline;
 	private String picture;
 
 	public Double getLatitude() {
@@ -66,10 +66,10 @@ public class AuctionForm implements Serializable {
 	public void setDetailInfo(String detailInfo) {
 		this.detailInfo = detailInfo;
 	}
-	public Date getDeadline() {
+	public LocalDate getDeadline() {
 		return deadline;
 	}
-	public void setDeadline(Date deadline) {
+	public void setDeadline(LocalDate deadline) {
 		this.deadline = deadline;
 	}
 }

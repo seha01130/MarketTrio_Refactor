@@ -4,6 +4,10 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.ZoneId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,7 +51,13 @@ public class AuctionService {
 		auctionEntity.setStartPrice(postData.getStartPrice());
 		auctionEntity.setMaxPrice(postData.getStartPrice());
 		auctionEntity.setDetailInfo(postData.getDetailInfo());
-		auctionEntity.setDeadline(postData.getDeadline());
+		LocalDate deadlineDate = postData.getDeadline();
+		Date deadlineDateTime = Date.from(
+				deadlineDate.atTime(LocalTime.of(23, 59, 59))
+						.atZone(ZoneId.systemDefault())
+						.toInstant()
+		);
+		auctionEntity.setDeadline(deadlineDateTime);
 		auctionEntity.setAuctionStatus(AUCTION_STATUS_OPEN);
 		auctionEntity.setCreateDate(new Date());
 		auctionEntity.setPictures(uploadedFileNames);

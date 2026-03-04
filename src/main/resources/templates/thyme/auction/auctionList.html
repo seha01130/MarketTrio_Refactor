@@ -126,7 +126,9 @@
     <div class="item-list" id="item-list">
         <div th:each="auction, iterStat : ${auctionList}">
             <a th:href="@{'/auction/' + ${auction.auctionPostId} + '/detail'}" class="item">
-                <img th:src="@{'/upload/' + ${auction.pictures[0]}}" alt="상품 이미지">
+                <img th:if="${!#lists.isEmpty(auction.pictures)}"
+                     th:src="@{'/upload/' + ${auction.pictures[0]}}"
+                     alt="상품 이미지">
                 <div class="item-details">
                     <div class="item-title" th:text="${auction.name}"></div>
                     <div class="item-title">현재최고입찰가</div>    
@@ -134,7 +136,7 @@
                     <div class="seller" th:text="${auction.member.nickname}"></div>
                 </div>
                 <div class="item-status">
-                    <div class="date" th:text="${#dates.format(auction.deadline, 'yyyy/MM/dd')}"></div>
+                    <div class="date" th:text="${#dates.format(auction.deadline, 'yyyy/MM/dd HH:mm:ss')}"></div>
                     <div class="sold" th:if="${auction.auctionStatus == 1}">경매 완료</div>
                 </div>
             </a>
