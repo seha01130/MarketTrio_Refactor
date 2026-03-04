@@ -154,19 +154,20 @@
         <div class="breadcrumb">
             <a th:href="@{/auction}">경매</a> &gt; 게시글 작성
         </div>
+        <div th:if="${fileSizeError}" class="error-message" th:text="${fileSizeError}"></div>
         <form class="form" th:action="@{/auction/create}" th:object="${auctionForm}" method="post" enctype="multipart/form-data">
             <div class="form-group">
                 <div class="image-preview" id="image-preview"></div>
                 <div class="form-control">
                     <label for="name">제목</label>
                     <input type="text" id="name" th:field="*{name}" placeholder="제목을 입력하세요.">
-                    <div th:if="${NoTitleMsg}" class="error-message" th:text="${NoTitleMsg}"></div>
+                    <div th:if="${#fields.hasErrors('name')}" class="error-message" th:errors="*{name}"></div>
                     <label for="startPrice">시작 가격</label>
                     <input type="text" id="startPrice" th:field="*{startPrice}" placeholder="시작 가격을 입력하세요.">
-                    <div th:if="${NoPriceMsg}" class="error-message" th:text="${NoPriceMsg}"></div>
+                    <div th:if="${#fields.hasErrors('startPrice')}" class="error-message" th:errors="*{startPrice}"></div>
                     <label for="deadline">마감 기한</label>
                     <input type="date" id="deadline" th:field="*{deadline}" placeholder="마감 기한을 입력하세요.">
-                    <div th:if="${NoDeadMsg}" class="error-message" th:text="${NoDeadMsg}"></div>
+                    <div th:if="${#fields.hasErrors('deadline')}" class="error-message" th:errors="*{deadline}"></div>
                     <label for="files">이미지 업로드</label>
                     <input type="file" id="files" name="files" multiple>
                 </div>
@@ -175,7 +176,7 @@
                 <div class="form-control">
                     <label for="detailInfo">상세설명</label>
                     <textarea id="detailInfo" th:field="*{detailInfo}" rows="10" placeholder="내용을 작성하세요."></textarea>
-                    <div th:if="${NoDetailMsg}" class="error-message" th:text="${NoDetailMsg}"></div>
+                    <div th:if="${#fields.hasErrors('detailInfo')}" class="error-message" th:errors="*{detailInfo}"></div>
                 </div>
             </div>
             <div class="form-group">
