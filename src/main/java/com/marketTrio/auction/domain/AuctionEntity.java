@@ -41,7 +41,7 @@ public class AuctionEntity {
 	@Column(nullable = false)
 	private String detailInfo;
 
-	@Temporal(TemporalType.DATE)
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(nullable = false)
 	private Date deadline;
 
@@ -53,7 +53,7 @@ public class AuctionEntity {
 	@Column(nullable = false)
 	private int auctionStatus;
 
-	@Temporal(TemporalType.DATE)
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(nullable = false)
 	private Date createDate;
 
